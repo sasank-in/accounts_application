@@ -1,11 +1,15 @@
 package com.eazybytes.accounts.controller;
 
 import org.springframework.web.bind.annotation.*;
-import com.eazybytes.accounts.dto.UserRequestDTO;
-import com.eazybytes.accounts.dto.UserResponseDTO;
 
+import com.eazybytes.accounts.dto.UserRequestDto;
+import com.eazybytes.accounts.dto.UserResponseDto;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import com.eazybytes.accounts.service.IUserService;
+import org.springframework.http.ResponseEntity;
+
+import com.eazybytes.accounts.service.UserService;
 import lombok.AllArgsConstructor;
 
 
@@ -14,11 +18,22 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserController {
 
-    private final IUserService userService;
+    private final UserService userService;
 
     @PostMapping("/create")
-    public UserResponseDTO createUser(@RequestBody UserRequestDTO dto) {
-        return userService.createUser(dto);
+    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserRequestDto dto) {
+
+        UserResponseDto response = userService.createUser(dto);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserResponseDto> findUserById(@PathVariable java.util.UUID id){
+        UserResponseDto response = userService.findUserById(id);
+        return ResponseEntity
+                .ok(response);
+    }
 }
